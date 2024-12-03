@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5dc; /* Beige color */
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-left: 5%;
+            white-space: nowrap;
+            width: 0;
+        }
+
+        form {
+            margin-left: 5%;
+            margin-top: 20px;
+        }
+
+        button {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            padding: 15px 30px;
+            color: #f5f5dc; /* Beige text for contrast */
+            background: #333;
+            border: 2px solid #f5f5dc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #f5f5dc; /* Swap colors on hover */
+            color: #333;
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+    <h1>Hi <%= name %>, congrats for successfully accessing!</h1>
+    <form action="/logout?_method=DELETE" method="POST">
+        <button type="submit">Log out</button>
+    </form>
+</body>
+</html>

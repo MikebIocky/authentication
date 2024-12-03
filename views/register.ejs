@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: beige;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background: #fff5e1;
+            width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #6b4423;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #6b4423;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #b68c6c;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: #a97142;
+            outline: none;
+            box-shadow: 0 0 8px rgba(169, 113, 66, 0.5);
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #a97142;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .form-button:hover {
+            background-color: #8c5d33;
+            transform: translateY(-2px);
+        }
+
+        .form-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #6b4423;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 14px;
+            color: #6b4423;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-valid {
+            color: green;
+        }
+
+        .password-invalid {
+            color: red;
+        }
+        
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <script>
+        function validatePassword() {
+            const passwordField = document.getElementById('password');
+            const reenterPasswordField = document.getElementById('reenter-password');
+            const requirements = document.getElementById('password-requirements');
+            const password = passwordField.value;
+
+            const isValid = /^(?=.*[!@#$%^&*])(?=.*[0-9]).{6,}$/.test(password);
+
+            if (isValid) {
+                requirements.textContent = "Password is valid";
+                requirements.className = "password-requirements password-valid";
+                reenterPasswordField.disabled = false;
+            } else {
+                requirements.textContent = "Password must be at least 6 characters, include 1 special character, and 1 number.";
+                requirements.className = "password-requirements password-invalid";
+                reenterPasswordField.disabled = true;
+                reenterPasswordField.value = ""; // Clear re-enter field if invalid
+            }
+
+            requirements.style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <form action="/register" method="POST" class="form-container">
+        <h1>Register</h1>
+        <% if (messages.error) { %>
+            <div class="error-message">
+                <%= messages.error %>
+            </div>
+        <% } %>
+        <div class="form-group">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" name="name" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-input" required oninput="validatePassword()">
+            <div id="password-requirements" class="password-requirements"></div>
+        </div>
+        <div class="form-group">
+            <label for="reenter-password" class="form-label">Re-enter Password</label>
+            <input type="password" id="reenter-password" name="reenter-password" class="form-input" disabled required>
+        </div>
+        <button type="submit" class="form-button">Register</button>
+        <a href="/login" class="form-link">Login</a>
+    </form>
+</body>
+</html>
