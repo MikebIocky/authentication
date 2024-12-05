@@ -92,6 +92,19 @@ if (process.env.NODE_ENV !== 'production') {
         res.redirect('/register');
     }
 });
+
+app.get("/api/users", (req, res) => {
+  const dataPath = path.join(__dirname, "data/users.json");
+
+  fs.readFile(dataPath, "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).send({ message: "Error reading users file." });
+    }
+
+    const users = JSON.parse(data);
+    res.send(users);
+  });
+});
   
   app.delete('/logout', (req, res) => {
     req.logOut(err => {

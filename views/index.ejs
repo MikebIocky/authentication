@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Dashboard</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -11,33 +11,96 @@
             color: #333;
             margin: 0;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            width: 90%;
+            max-width: 1200px;
+            gap: 30px;
+        }
+
+        .welcome-column {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            height: 100vh;
-            overflow: hidden;
+            text-align: left;
         }
 
-        h1 {
-            font-size: 48px;
-            margin-left: 5%;
-            white-space: nowrap;
-            width: 0;
+        .welcome-column h1 {
+            font-size: 3rem;
+            margin: 0;
         }
 
-        form {
-            margin-left: 5%;
+        .dashboard-container {
+            flex: 2;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        .table-container {
+            overflow-x: auto;
             margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #f5f5dc;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-container input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 300px;
         }
 
         button {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 20px;
-            padding: 15px 30px;
+            font-size: 16px;
+            padding: 10px 20px;
             color: #f5f5dc; /* Beige text for contrast */
             background: #333;
             border: 2px solid #f5f5dc;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
         }
@@ -45,19 +108,87 @@
         button:hover {
             background-color: #f5f5dc; /* Swap colors on hover */
             color: #333;
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
         }
 
         button:active {
-            transform: scale(0.9);
+            transform: scale(0.95);
+        }
+
+        .welcome-column .h2{
+            font-weight: normal;
         }
     </style>
 </head>
 <body>
-    <h1>Hi <%= name %>, congrats for successfully accessing!</h1>
-    <form action="/logout?_method=DELETE" method="POST">
-        <button type="submit">Log out</button>
-    </form>
+    <div class="main-container">
+        <div class="welcome-column">
+            <h1>Hi <%= name %>,<br>Congrats for successfully accessing!</h1>
+            <h2>Please check the dashboard in the table on the right if your information has been stored!</h2>
+        </div>
+        <div class="dashboard-container">
+            <h1>Dashboard</h1>
+
+            <div class="table-container">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Name</th>
+                            <th onclick="sortTable(1)">Email</th>
+                            <th onclick="sortTable(2)">ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be populated dynamically -->
+                    </tbody>
+                </table>
+
+                <form action="/logout?_method=DELETE" method="POST">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Fetch and display data
+        async function fetchUsers() {
+            const response = await fetch("/api/users");
+            const users = await response.json();
+            const tbody = document.querySelector("#dataTable tbody");
+
+            tbody.innerHTML = ""; // Clear existing rows
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.id}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initial fetch on page load
+        window.onload = fetchUsers;
+
+        // Sorting functionality
+        function sortTable(columnIndex) {
+            const table = document.getElementById("dataTable");
+            const rows = Array.from(table.rows).slice(1);
+            const isAscending = table.getAttribute("data-sort-order") === "asc";
+
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].innerText.toLowerCase();
+                const cellB = b.cells[columnIndex].innerText.toLowerCase();
+
+                return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+            });
+
+            rows.forEach(row => table.tBodies[0].appendChild(row));
+            table.setAttribute("data-sort-order", isAscending ? "desc" : "asc");
+        }
+    </script>
 </body>
 </html>
